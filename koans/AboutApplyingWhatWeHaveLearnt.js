@@ -32,7 +32,7 @@ describe("About Applying What We Have Learnt", function() {
         }
     }
 
-    expect(productsICanEat.length).toBe(FILL_ME_IN);
+    expect(productsICanEat.length).toBe(1);
   });
 
   it("given I'm allergic to nuts and hate mushrooms, it should find a pizza I can eat (functional)", function () {
@@ -40,8 +40,20 @@ describe("About Applying What We Have Learnt", function() {
       var productsICanEat = [];
 
       /* solve using filter() & all() / any() */
+      productsICanEat = _.filter(products, function(product) {
+         return  product["containsNuts"] === true;
+      });
+      productsICanEat = _.filter(productsICanEat, function(product) {
+         var ingredients = product["ingredients"];
+         var hasMushrooms =  _.any(ingredients, function(ingre) {
+              _.any(ingre, function(i) {
+                return i ==="mushrooms";
+              })
+          });
+          return !hasMushrooms;
+      });
 
-      expect(productsICanEat.length).toBe(FILL_ME_IN);
+      expect(productsICanEat.length).toBe(2);
   });
 
   /*********************************************************************************/
@@ -55,14 +67,20 @@ describe("About Applying What We Have Learnt", function() {
       }
     }
 
-    expect(sum).toBe(FILL_ME_IN);
+    expect(sum).toBe(233168);
   });
 
   it("should add all the natural numbers below 1000 that are multiples of 3 or 5 (functional)", function () {
 
     var sum = FILL_ME_IN;    /* try chaining range() and reduce() */
+      sum = _.reduce(_.range(1000), function(memo, i) {
+          if (i%3===0 || i%5===0) {
+              return memo +i;
+          }
+          return memo;
+      }, 0);
 
-    expect(233168).toBe(FILL_ME_IN);
+    expect(233168).toBe(sum);
   });
 
   /*********************************************************************************/
@@ -75,15 +93,26 @@ describe("About Applying What We Have Learnt", function() {
         }
     }
 
-    expect(ingredientCount['mushrooms']).toBe(FILL_ME_IN);
+    expect(ingredientCount['mushrooms']).toBe(2);
   });
 
   it("should count the ingredient occurrence (functional)", function () {
     var ingredientCount = { "{ingredient name}": 0 };
 
     /* chain() together map(), flatten() and reduce() */
+      var count = 0;
+    //  var ingredients = _.map(products,function(product) {
+          //return product["ingredients"];
+      //});
+      //ingredients = _.flatten(ingredients);
+      var ingredients= _(products).chain().map(function(product) {
+          return product["ingredients"];
+      }).flatten().reduce( function(counts, word) {
+          counts[word] = (counts[word] || 0) + 1;
+          return counts;
+      }, ingredientCount/*{}*/).value();
 
-    expect(ingredientCount['mushrooms']).toBe(FILL_ME_IN);
+    expect(ingredientCount['mushrooms']).toBe(ingredients["mushrooms"]);
   });
 
   /*********************************************************************************/
